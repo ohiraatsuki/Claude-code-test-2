@@ -5,7 +5,7 @@
 ## 機能
 
 - **ニュース取得**: Google Newsからテクノロジーニュースを自動収集
-- **AIチャット**: Claude APIを使用したインテリジェントな質問応答
+- **AIチャット**: Gemini APIを使用したインテリジェントな質問応答
 - **要約機能**: ニュース記事の要約と説明
 - **多言語対応**: 日本語・英語両対応
 
@@ -14,7 +14,7 @@
 - **フロントエンド**: Next.js 14 (App Router), React, TypeScript, Tailwind CSS
 - **バックエンド**: Hono
 - **データベース**: Prisma + SQLite (開発) / PostgreSQL (本番)
-- **AIエージェント**: Mastra + Claude API
+- **AIエージェント**: Mastra + Gemini API
 - **デプロイ**: Google Cloud Run
 
 ## セットアップ
@@ -23,7 +23,7 @@
 
 - Node.js 20+
 - npm または yarn
-- Anthropic API キー
+- Gemini API キー（Google AI Studio で取得）
 
 ### インストール
 
@@ -47,8 +47,8 @@ cp .env.example .env
 DATABASE_URL="file:./dev.db"  # 開発環境 (SQLite)
 # DATABASE_URL="postgresql://user:password@localhost:5432/news_chatbot"  # 本番環境
 
-# Claude API
-ANTHROPIC_API_KEY="your-api-key"
+# Gemini API
+GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
 
 # App
 NODE_ENV="development"
@@ -109,7 +109,7 @@ docker build -t news-chatbot .
 # 実行
 docker run -p 3000:3000 \
   -e DATABASE_URL="your-database-url" \
-  -e ANTHROPIC_API_KEY="your-api-key" \
+  -e GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key" \
   news-chatbot
 ```
 
@@ -126,7 +126,7 @@ docker-compose down
 ### Google Cloud Run
 
 1. Secret Manager で環境変数を設定
-   - `ANTHROPIC_API_KEY`
+   - `GOOGLE_GENERATIVE_AI_API_KEY`
    - `DATABASE_URL`
 
 2. Cloud Build でデプロイ
