@@ -1,0 +1,47 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/news-chatbot:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/news-chatbot:latest'
+      - '.'
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/news-chatbot:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/news-chatbot:latest'
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'news-chatbot'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/news-chatbot:$COMMIT_SHA'
+      - '--region'
+      - 'asia-northeast1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'NODE_ENV=production'
+      - '--set-secrets'
+      - 'GOOGLE_GENERATIVE_AI_API_KEY=GOOGLE_GENERATIVE_AI_API_KEY:latest,DATABASE_URL=DATABASE_URL:latest'
+
+images:
+  - 'gcr.io/$PROJECT_ID/news-chatbot:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/news-chatbot:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
